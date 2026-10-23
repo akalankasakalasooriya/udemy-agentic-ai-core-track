@@ -150,6 +150,9 @@ activemq-data/
 # Environments
 .env
 .envrc
+
+# Hugging Face weights for the Week 3 notebooks
+W3-Open Source Models/hf-cache/
 .venv
 env/
 venv/
