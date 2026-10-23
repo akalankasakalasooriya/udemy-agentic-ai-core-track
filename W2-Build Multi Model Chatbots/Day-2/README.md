@@ -6,7 +6,7 @@
 - **Chat** streams a markdown answer from Azure OpenAI.
 - **Brochure** reads a company site with the Week 1 scraper, then streams a brochure from Azure OpenAI.
 
-The deployment name is `GPT_MODEL` in the repo `.env` (currently `gpt-4o`).
+Chat and Brochure can use the Azure deployments `gpt-4o` (`GPT_MODEL`), `gpt-4o-mini`, and `gpt-4.1`.
 
 ## Run
 

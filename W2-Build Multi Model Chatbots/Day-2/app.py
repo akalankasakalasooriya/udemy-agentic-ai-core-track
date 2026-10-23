@@ -16,6 +16,10 @@ azure = AzureOpenAI(
     azure_endpoint=os.getenv("GPT_ENDPOINT"),
 )
 azure_model = os.getenv("GPT_MODEL", "gpt-4o")
+deployments = []
+for name in (azure_model, "gpt-4o-mini", "gpt-4.1"):
+    if name not in deployments:
+        deployments.append(name)
 
 brochure_root = repo_root / "W1-LLM Engineer" / "Day-4" / "1-company-brochre"
 sys.path.insert(0, str(brochure_root))
@@ -32,7 +36,7 @@ def shout(text):
     return (text or "").upper()
 
 
-def stream_reply(prompt):
+def stream_reply(prompt, deployment):
     prompt = (prompt or "").strip()
     if not prompt:
         yield "Type a message first."
@@ -43,7 +47,7 @@ def stream_reply(prompt):
         {"role": "user", "content": prompt},
     ]
     stream = azure.chat.completions.create(
-        model=azure_model,
+        model=deployment,
         messages=messages,
         stream=True,
         timeout=120.0,
@@ -55,7 +59,7 @@ def stream_reply(prompt):
             yield result
 
 
-def stream_brochure(company_name, url):
+def stream_brochure(company_name, url, deployment):
     company_name = (company_name or "").strip()
     url = (url or "").strip()
     if not company_name or not url:
@@ -80,7 +84,7 @@ def stream_brochure(company_name, url):
         {"role": "user", "content": user_prompt[:5000]},
     ]
     stream = azure.chat.completions.create(
-        model=azure_model,
+        model=deployment,
         messages=messages,
         stream=True,
         timeout=120.0,
@@ -106,32 +110,39 @@ def build_demo():
 
             with gr.Tab("Chat"):
                 chat_in = gr.Textbox(label="Your message", lines=6)
+                chat_model = gr.Dropdown(deployments, value=azure_model, label="Model")
                 chat_out = gr.Markdown(label="Response")
                 chat_button = gr.Button("Send")
                 gr.Examples(
                     [
-                        "Explain the Transformer architecture to a layperson",
-                        "Explain the Transformer architecture to an aspiring AI engineer",
+                        ["Explain the Transformer architecture to a layperson", azure_model],
+                        [
+                            "Explain the Transformer architecture to an aspiring AI engineer",
+                            "gpt-4o-mini",
+                        ],
                     ],
-                    inputs=chat_in,
+                    inputs=[chat_in, chat_model],
                 )
-                chat_button.click(stream_reply, chat_in, chat_out)
-                chat_in.submit(stream_reply, chat_in, chat_out)
+                chat_button.click(stream_reply, [chat_in, chat_model], chat_out)
+                chat_in.submit(stream_reply, [chat_in, chat_model], chat_out)
 
             with gr.Tab("Brochure"):
                 company = gr.Textbox(label="Company name")
                 url = gr.Textbox(label="Landing page URL including http:// or https://")
+                brochure_model = gr.Dropdown(deployments, value=azure_model, label="Model")
                 brochure = gr.Markdown(label="Brochure")
                 brochure_button = gr.Button("Create brochure")
                 gr.Examples(
                     [
-                        ["Hugging Face", "https://huggingface.co"],
-                        ["Edward Donner", "https://edwarddonner.com"],
+                        ["Hugging Face", "https://huggingface.co", azure_model],
+                        ["Edward Donner", "https://edwarddonner.com", "gpt-4.1"],
                     ],
-                    inputs=[company, url],
+                    inputs=[company, url, brochure_model],
                 )
-                brochure_button.click(stream_brochure, [company, url], brochure)
-                url.submit(stream_brochure, [company, url], brochure)
+                brochure_button.click(
+                    stream_brochure, [company, url, brochure_model], brochure
+                )
+                url.submit(stream_brochure, [company, url, brochure_model], brochure)
     return demo
 
 
