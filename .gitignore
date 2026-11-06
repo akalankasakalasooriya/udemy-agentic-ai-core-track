@@ -153,6 +153,10 @@ activemq-data/
 
 # Hugging Face weights for the Week 3 notebooks
 W3-Open Source Models/hf-cache/
+
+# Week 4 compiled C++ samples
+W4-Model Evaluation/Day-3/main
+W4-Model Evaluation/Day-4/main
 .venv
 env/
 venv/
