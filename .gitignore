@@ -157,6 +157,9 @@ W3-Open Source Models/hf-cache/
 # Week 4 compiled C++ samples
 W4-Model Evaluation/Day-3/main
 W4-Model Evaluation/Day-4/main
+
+# Week 5 local Chroma database
+W5-RAG/vector_db/
 .venv
 env/
 venv/
