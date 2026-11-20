@@ -1,3 +1,4 @@
-# udemy-agentic-ai-core-track
+# Agentic AI Core Track
 
-Notes and code for the Udemy agentic AI core track. Each week has its own folder, and each day builds on the one before it, from calling LLM APIs to RAG and evaluation. Chat models run on Azure OpenAI, local embeddings use Hugging Face, and vector stores are local Chroma databases. Keys go in the root `.env` file.
+This project is my learning journey through the Agentic AI Core Track course on Udemy. It's a collection of hands-on exercises and mini projects that show how modern AI systems are built, starting from the basics and growing into more capable, practical applications.
+
